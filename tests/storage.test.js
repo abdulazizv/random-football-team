@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createStorage, KEY } from "./storage.js";
+import { createStorage, KEY } from "../src/js/storage.js";
 
 // Minimal stand-in for the browser Storage interface.
 function fakeStorage(seed = {}) {
@@ -39,9 +39,9 @@ test("survives corrupt stored data instead of throwing", () => {
 // every key on the origin. Nothing may call Storage.clear() again.
 test("no source file calls Storage.clear()", async () => {
   const { readdir, readFile } = await import("node:fs/promises");
-  const dir = new URL(".", import.meta.url);
+  const dir = new URL("../src/js/", import.meta.url);
   for (const f of await readdir(dir)) {
-    if (!f.endsWith(".js") || f.endsWith(".test.js")) continue;
+    if (!f.endsWith(".js")) continue;
     const src = await readFile(new URL(f, dir), "utf8");
     assert.ok(
       !/\.\s*clear\s*\(/.test(src),

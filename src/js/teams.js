@@ -1,6 +1,10 @@
 import { formation } from "./split.js";
 
-const STAGGER_MS = 80;
+// Players land one at a time on a beat - the draw should feel like a reveal,
+// not a page render. 300ms reads as deliberate without dragging: a typical
+// 12-player game finishes in about three and a half seconds.
+const STAGGER_MS = 300;
+const POP_MS = 380;
 
 const reducedMotion = () =>
   globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
@@ -90,18 +94,19 @@ function buildPlayer(player, { top, left, index, animate }) {
 
   if (animate) {
     el.style.opacity = "0";
-    el.style.transition = "opacity 220ms ease-out, transform 220ms ease-out";
-    el.style.transform = "translate(-50%, calc(-50% + 8px))";
+    el.style.transform = "translate(-50%, -50%) scale(.55)";
+    // Overshoot easing so each player pops onto the pitch rather than fading in.
+    el.style.transition =
+      `opacity ${POP_MS}ms ease-out, transform ${POP_MS}ms cubic-bezier(.34, 1.56, .64, 1)`;
     setTimeout(() => {
       el.style.opacity = "1";
-      el.style.transform = "translate(-50%, -50%)";
+      el.style.transform = "translate(-50%, -50%) scale(1)";
     }, index * STAGGER_MS);
   }
 
   const img = document.createElement("img");
   img.src = `./images/${player.avatar}.webp`;
   img.alt = "";
-  img.loading = "lazy";
   img.decoding = "async";
   img.className = "h-14 w-auto max-w-[4.5rem] object-contain drop-shadow-lg";
 

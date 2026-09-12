@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { divideTeams, formation } from "./split.js";
+import { divideTeams, formation } from "../src/js/split.js";
 
 const roster = (n) => Array.from({ length: n }, (_, i) => `P${i + 1}`);
 const names = (teams) => teams.flatMap((t) => t.players.map((p) => p.name));

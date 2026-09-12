@@ -7,7 +7,7 @@
     "start": "npx serve src",
     "dev": "npx tailwindcss -i ./src/main.css -o ./src/output.css --watch",
     "build": "npx tailwindcss -i ./src/main.css -o ./src/output.css --minify",
-    "test": "node --test src/js/*.test.js"
+    "test": "node --test tests/*.test.js"
   },
   "keywords": [],
   "author": "",
