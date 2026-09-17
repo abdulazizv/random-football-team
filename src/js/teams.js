@@ -1,4 +1,5 @@
 import { formation } from "./split.js";
+import { avatarMarkup } from "./avatar.js";
 
 // Players land one at a time on a beat - the draw should feel like a reveal,
 // not a page render. 300ms reads as deliberate without dragging: a typical
@@ -76,6 +77,7 @@ function buildCard(team, animate, nextIndex) {
           left: ((c + 0.5) / cols) * 100,
           index: nextIndex(),
           animate,
+          color: team.color,
         })
       );
     }
@@ -85,7 +87,7 @@ function buildCard(team, animate, nextIndex) {
   return card;
 }
 
-function buildPlayer(player, { top, left, index, animate }) {
+function buildPlayer(player, { top, left, index, animate, color }) {
   const el = document.createElement("div");
   el.className =
     "absolute flex w-20 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1";
@@ -104,11 +106,11 @@ function buildPlayer(player, { top, left, index, animate }) {
     }, index * STAGGER_MS);
   }
 
-  const img = document.createElement("img");
-  img.src = `./images/${player.avatar}.webp`;
-  img.alt = "";
-  img.decoding = "async";
-  img.className = "h-14 w-auto max-w-[4.5rem] object-contain drop-shadow-lg";
+  // The avatar is generated markup with no user data in it, so innerHTML is
+  // safe here; the player's name below still goes through textContent.
+  const figure = document.createElement("div");
+  figure.className = "drop-shadow-lg";
+  figure.innerHTML = avatarMarkup(player.avatar, color);
 
   const name = document.createElement("span");
   name.className =
@@ -116,6 +118,6 @@ function buildPlayer(player, { top, left, index, animate }) {
   // textContent so a name with quotes or angle brackets renders literally.
   name.textContent = player.name;
 
-  el.append(img, name);
+  el.append(figure, name);
   return el;
 }
